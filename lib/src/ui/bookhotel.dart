@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 import '../ui/hotel_det.dart';
+import 'orderconfirmscreen.dart';
 
 class BookHotel extends StatefulWidget {
   final String id;
@@ -18,27 +19,21 @@ class BookHotel extends StatefulWidget {
 }
 
 class _BookHotelState extends State<BookHotel> {
+  String name, email, phone, userId;
 
-  
-   String name,email,phone,userId;
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
+      phone = prefs.getString("phone");
 
-        phone  = prefs.getString("phone");
-
-username.text = name;
-      });
-
-}
-
+      username.text = name;
+    });
+  }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   DateTime _selectedDate;
@@ -58,15 +53,20 @@ username.text = name;
   bool isselected = false;
   int selctedprice = 0;
 
-  List<SmartSelectOption<String>> list ;
+  List<SmartSelectOption<String>> list;
   @override
   void initState() {
-    list = List<SmartSelectOption<String>>();
+    list = [];
+    print(widget.room.length);
     // TODO: implement initState
     for (int i = 0; i < widget.room.length; i++) {
-      list.add(SmartSelectOption<String>(
+      print(widget.room[i].roomtype);
+      list.add(
+        SmartSelectOption<String>(
           title: widget.room[i].roomtype,
-          value: widget.room[i].roomprice.toString()));
+          value: widget.room[i].roomprice.toString(),
+        ),
+      );
     }
     getPreFab();
     super.initState();
@@ -147,8 +147,10 @@ username.text = name;
               options: list,
               value: "This is value",
               onChange: (selected) {
-                cost = int.parse(selected);
-                type = selected;
+                setState(() {
+                  cost = int.parse(selected);
+                  type = selected;
+                });
                 print(type);
                 print(selected);
               }),
@@ -169,7 +171,7 @@ username.text = name;
                 if (_textEditingController.text != "" &&
                     _textEditingControllerCheckout.text != "") {
                   differenceInDays = 4;
-                      // _checkoutdate.difference(_selectedDate).inDays;
+                  // _checkoutdate.difference(_selectedDate).inDays;
                 }
 
                 if (_textEditingController.text != "" &&
@@ -216,16 +218,16 @@ username.text = name;
                               SizedBox(
                                 height: 5,
                               ),
-                              RaisedButton(
+                              MaterialButton(
                                   child: const Text('Confirm'),
                                   onPressed: () {
-                                         var rand = Random();
-    int id = rand.nextInt(100000);
-    
+                                    var rand = Random();
+                                    int id = rand.nextInt(100000);
+
                                     FirebaseFirestore.instance
                                         .collection('order-booking')
                                         .add({
-                                          "type": "hotel",
+                                      "type": "hotel",
                                       "booking_id": id,
                                       "customer_phone": phone,
                                       "end_date":
@@ -241,9 +243,15 @@ username.text = name;
                                       "total_amount": price,
                                       "timeStamp": DateTime.now(),
                                     }).then((value) => {
-                                              Navigator.pop(context),
-                                              showInSnackBar(
-                                                  "Booking confirmed")
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          OrderConfirm(
+                                                            orderId: id,
+                                                            msg:
+                                                                "Your Room is Booked",
+                                                          )))
                                             });
                                   })
                             ],

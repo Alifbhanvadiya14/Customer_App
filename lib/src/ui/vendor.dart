@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VendorList extends StatefulWidget {
   final String title, type;
-  VendorList({this.title,this.type});
+  VendorList({this.title, this.type});
   @override
   _VendorListState createState() => _VendorListState();
 }
@@ -14,6 +14,8 @@ class VendorList extends StatefulWidget {
 class _VendorListState extends State<VendorList> {
   @override
   Widget build(BuildContext context) {
+    print(widget.title);
+    print(widget.type);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -80,9 +82,10 @@ class _VendorListState extends State<VendorList> {
             ),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("provider").where("provider_type",isEqualTo: "vendor")
+                    .collection("provider")
+                    .where("vendor_type", isEqualTo: widget.type)
                     // .where()
-                   .snapshots(),
+                    .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (!snapshot.hasData) {
@@ -111,7 +114,7 @@ class _VendorListState extends State<VendorList> {
                             vendor["vendor_title"],
                             vendor["vendor_img_url"],
                             vendor["id"],
-                             vendor["id"],
+                            vendor["id"],
                             vendor["vendor_city"]);
                       },
                     );
@@ -129,36 +132,44 @@ class _VendorListState extends State<VendorList> {
       child: GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => StorePg(
-                        title: name,
-                        img: img,
-                        loc: loc,
-                        tag: tag,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => StorePg(
+                title: name,
+                img: img,
+                loc: loc,
+                tag: tag,
+              ),
+            ),
+          );
         },
         child: Card(
           elevation: 3.0,
           child: Container(
-            height: MediaQuery.of(context).size.height / 5,
+            height: MediaQuery.of(context).size.height / 6,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fitWidth, image: NetworkImage(img)))),
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fitWidth, image: NetworkImage(img)),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(name.toUpperCase(),
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        name.toUpperCase(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       SizedBox(
                         height: 2,
                       ),

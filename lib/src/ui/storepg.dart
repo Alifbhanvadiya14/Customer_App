@@ -18,6 +18,8 @@ class StorePg extends StatefulWidget {
 class _StorePgState extends State<StorePg> {
   @override
   Widget build(BuildContext context) {
+    print("Grocery Title : " + widget.title);
+    print(widget.tag);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -83,7 +85,7 @@ class _StorePgState extends State<StorePg> {
               child: Card(
                 elevation: 3.0,
                 child: Container(
-                  height: MediaQuery.of(context).size.height / 3,
+                  height: MediaQuery.of(context).size.height / 4,
                   child: Column(
                     children: [
                       Row(
@@ -119,15 +121,16 @@ class _StorePgState extends State<StorePg> {
                           )
                         ],
                       ),
-                      RaisedButton(
+                      MaterialButton(
+                        color: Colors.green,
+                        textColor: Colors.white,
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MyCustomForm()));
+                                  builder: (context) => MyCustomForm(
+                                      name: widget.title, id: widget.tag)));
                         },
-                        color: Colors.green,
-                        textColor: Colors.white,
                         child: Text("Enquire Now"),
                       )
                     ],
@@ -145,21 +148,24 @@ class _StorePgState extends State<StorePg> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AllProd(
-                                id: widget.tag,
-                              ),
-                            ));
-                      },
-                      child: Text("View All"))
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllProd(
+                            id: widget.tag,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text("View All"),
+                  )
                 ],
               ),
             ),
             ProdList(
               tag: widget.tag,
+              name: widget.title,
             )
           ],
         ),

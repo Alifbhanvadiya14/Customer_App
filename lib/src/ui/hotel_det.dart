@@ -51,9 +51,10 @@ class _HotelDetState extends State<HotelDet> {
       body: Stack(
         children: <Widget>[
           Container(
-              foregroundDecoration: BoxDecoration(color: Colors.black26),
-              height: 400,
-              child: Image.network(widget.img, fit: BoxFit.cover)),
+            foregroundDecoration: BoxDecoration(color: Colors.black26),
+            height: 400,
+            child: Image.network(widget.img, fit: BoxFit.cover),
+          ),
           SingleChildScrollView(
             padding: const EdgeInsets.only(top: 16.0, bottom: 20.0),
             child: Column(
@@ -156,7 +157,7 @@ class _HotelDetState extends State<HotelDet> {
                       const SizedBox(height: 30.0),
                       SizedBox(
                         width: double.infinity,
-                        child: RaisedButton(
+                        child: MaterialButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           color: Colors.purple,
@@ -171,13 +172,15 @@ class _HotelDetState extends State<HotelDet> {
                           ),
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BookHotel(
-                                          id: widget.hotelid,
-                                          name: widget.name,
-                                          room: roomtype,
-                                        )));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookHotel(
+                                  id: widget.hotelid,
+                                  name: widget.name,
+                                  room: roomtype,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -392,18 +395,23 @@ Widget roomtile(
   return Card(
     elevation: 3.0,
     child: Container(
-      height: MediaQuery.of(context).size.height / 3,
+      //color: Colors.red,
+      height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                  width: 160,
-                  height: 160,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fitWidth, image: NetworkImage(img)))),
+                width: 160,
+                height: 160,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fitWidth,
+                    image: NetworkImage(img),
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8, top: 8),
                 child: Column(
@@ -424,7 +432,7 @@ Widget roomtile(
                                     "₹ " + price.toString() + " ",
                                     style: TextStyle(
                                         fontStyle: FontStyle.italic,
-                                        fontSize: 10,
+                                        fontSize: 12,
                                         decoration: TextDecoration.lineThrough),
                                   ),
                                   Text("₹ " + offerprice.toString())
@@ -432,25 +440,26 @@ Widget roomtile(
                               ),
                       ],
                     ),
+                    MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.purple,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Select",
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 32.0,
+                        ),
+                        onPressed: () {})
                   ],
                 ),
               )
             ],
           ),
-          RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
-              color: Colors.purple,
-              textColor: Colors.white,
-              child: Text(
-                "Select",
-                style: TextStyle(fontWeight: FontWeight.normal),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: 16.0,
-                horizontal: 32.0,
-              ),
-              onPressed: () {})
         ],
       ),
     ),
@@ -462,7 +471,8 @@ Widget reviewtile(
   return Card(
     elevation: 3.0,
     child: Container(
-      height: MediaQuery.of(context).size.height / 5,
+      //color: Colors.red,
+      height: MediaQuery.of(context).size.height / 8,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

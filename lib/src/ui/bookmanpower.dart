@@ -1,43 +1,48 @@
 import 'dart:math';
-import 'orderconfirmscreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 
-class BookCafe extends StatefulWidget {
+import 'orderconfirmscreen.dart';
+
+class BookManpower extends StatefulWidget {
   final String id;
   final String name;
+  final DocumentSnapshot packageSnapshot;
 
-  BookCafe({this.id, this.name});
+  const BookManpower({Key key, this.id, this.name, this.packageSnapshot})
+      : super(key: key);
 
   @override
-  _BookCafeState createState() => _BookCafeState();
+  _BookManpowerState createState() => _BookManpowerState();
 }
 
-class _BookCafeState extends State<BookCafe> {
+class _BookManpowerState extends State<BookManpower> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   DateTime _selectedDate;
-  DateTime _checkoutdate;
 
   String type = "x";
   int cost = 0;
   int differenceInDays = 0;
-
   TextEditingController _textEditingController = TextEditingController();
+
   TextEditingController _textEditingControllerCheckout =
       TextEditingController();
-  TextEditingController adults = TextEditingController();
-  TextEditingController child = TextEditingController();
+
+  // TextEditingController adults = TextEditingController();
+  // TextEditingController child = TextEditingController();
   TextEditingController phn = TextEditingController();
+  TextEditingController totalPrice = TextEditingController();
   TextEditingController username = TextEditingController();
   int totprice = 0;
   bool isselected = false;
   int selctedprice = 0;
-
-  List<SmartSelectOption<String>> list;
-
+  // List<SmartSelectOption<String>> list;
+  //
   String name, email, phone, userId;
 
   getPreFab() async {
@@ -55,12 +60,6 @@ class _BookCafeState extends State<BookCafe> {
   @override
   void initState() {
     getPreFab();
-    list = [];
-
-    for (int i = 4; i < 10; i += 2) {
-      list.add(SmartSelectOption<String>(
-          title: i.toString() + ":30", value: i.toString() + ":30"));
-    }
     super.initState();
   }
 
@@ -71,6 +70,7 @@ class _BookCafeState extends State<BookCafe> {
 
   @override
   Widget build(BuildContext context) {
+    totalPrice.text = widget.packageSnapshot.data()["package_price"].toString();
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
@@ -96,29 +96,37 @@ class _BookCafeState extends State<BookCafe> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Number of Persons"),
-              controller: adults,
-            ),
-          ),
-          SmartSelect<String>.single(
-              title: "Choose Slot",
-              modalType: SmartSelectModalType.bottomSheet,
-              options: list,
-              value: "This is value",
-              onChange: (selected) {
-                type = selected;
-                print(type);
-                print(selected);
-              }),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextField(
+          //     keyboardType: TextInputType.number,
+          //     decoration: InputDecoration(labelText: "Number of Persons"),
+          //     controller: adults,
+          //   ),
+          // ),
+          // SmartSelect<String>.single(
+          //     title: "Choose Slot",
+          //     modalType: SmartSelectModalType.bottomSheet,
+          //     options: list,
+          //     value: "This is value",
+          //     onChange: (selected) {
+          //       type = selected;
+          //       print(type);
+          //       print(selected);
+          //     }),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               controller: username,
               decoration: InputDecoration(labelText: "Customer Name"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              readOnly: true,
+              controller: totalPrice,
+              decoration: InputDecoration(labelText: "Total Amount"),
             ),
           ),
           Padding(
@@ -128,10 +136,7 @@ class _BookCafeState extends State<BookCafe> {
               color: Colors.green,
               textColor: Colors.white,
               onPressed: () {
-                if (_textEditingController.text != "" &&
-                    type != "x" &&
-                    adults.text != "" &&
-                    username.text != "") {
+                if (_textEditingController.text != "" && username.text != "") {
                   print("here");
 
                   showModalBottomSheet<void>(
@@ -152,34 +157,38 @@ class _BookCafeState extends State<BookCafe> {
                               SizedBox(
                                 height: 5,
                               ),
-                              Text(
-                                "For " + adults.text + " people",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                              // Text(
+                              //   "For " + adults.text + " people",
+                              //   style: TextStyle(fontWeight: FontWeight.bold),
+                              // ),
                               SizedBox(
                                 height: 5,
                               ),
-                              MaterialButton(
+                              RaisedButton(
                                   child: const Text('Confirm'),
                                   onPressed: () {
                                     var rand = Random();
                                     int id = rand.nextInt(100000);
                                     FirebaseFirestore.instance
-                                        .collection('cafe-bookings')
+                                        .collection('order-booking')
                                         .add({
                                       "booking_id": id,
-                                      "customer_phone": phone,
+                                      "customer_phone": "7457030549",
 
-                                      "guest_id": userId,
+                                      "user_id": userId,
                                       "guest_name": username.text,
-                                      "cafe_id": widget.id,
-                                      "cafe_name": widget.name,
-
-                                      "no_of_person": adults.text,
-                                      "booking_slot": type,
+                                      "manpower_id": widget.id,
+                                      "manpower_name": widget.name,
+                                      "package_name": widget.packageSnapshot
+                                          .data()["package_name"],
+                                      "package_id": widget.packageSnapshot
+                                          .data()["package_id"],
+                                      // "no_of_person": adults.text,
+                                      // "booking_slot": type,
                                       "booking_date":
                                           _textEditingController.text,
-                                      //"total_amount": price,
+                                      "total_amount":
+                                          int.parse(totalPrice.text),
                                     }).then((value) => {
                                               Navigator.push(
                                                   context,
@@ -188,7 +197,7 @@ class _BookCafeState extends State<BookCafe> {
                                                           OrderConfirm(
                                                             orderId: id,
                                                             msg:
-                                                                "Your Table is Booked",
+                                                                "Your Service is Booked",
                                                           )))
                                             });
                                   })
@@ -200,12 +209,8 @@ class _BookCafeState extends State<BookCafe> {
                   );
                 } else if (_textEditingController.text == "") {
                   showInSnackBar("Please enter  date");
-                } else if (adults.text == "") {
-                  showInSnackBar("Please enter number of persons");
                 } else if (username.text == "") {
                   showInSnackBar("Please enter your name");
-                } else if (type == "x") {
-                  showInSnackBar("Please choose slot");
                 }
               },
             ),
@@ -247,9 +252,9 @@ class _BookCafeState extends State<BookCafe> {
             affinity: TextAffinity.upstream));
       if (iswhat == "cin") {
         _selectedDate = type;
-      } else {
-        _checkoutdate = type;
-      }
+      } // else {
+      //   // _checkoutdate = type;
+      // }
     }
   }
 }

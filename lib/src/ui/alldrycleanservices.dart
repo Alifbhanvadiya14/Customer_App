@@ -81,9 +81,9 @@ class _AllDryCleanServiceState extends State<AllDryCleanService> {
             ),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("drycleanservice")
+                    .collection("provider")
                     .doc(widget.id)
-                    .collection("Services")
+                    .collection("services")
                     .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProdList extends StatefulWidget {
-  final String tag;
-  ProdList({this.tag});
+  final String tag, name;
+  ProdList({this.tag, this.name});
   @override
   _ProdListState createState() => _ProdListState();
 }
@@ -29,20 +29,22 @@ class _ProdListState extends State<ProdList> {
           GestureDetector(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProdDet(
-                            title: title,
-                            url: img,
-                            quan: weight.toString(),
-                            cp: cp,
-                            sp: price,
-                            tag: widget.tag,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProdDet(
+                    title: title,
+                    url: img,
+                    quan: weight.toString(),
+                    cp: cp,
+                    sp: price,
+                    tag: widget.tag,
+                  ),
+                ),
+              );
             },
             child: Container(
-              width: MediaQuery.of(context).size.width / 4,
-              height: MediaQuery.of(context).size.height / 4,
+              width: MediaQuery.of(context).size.width / 3.5,
+              height: MediaQuery.of(context).size.height / 5.5,
               child: Image.network(
                 img,
                 height: MediaQuery.of(context).size.height / 5,
@@ -52,11 +54,11 @@ class _ProdListState extends State<ProdList> {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 10),
+            style: TextStyle(fontSize: 12),
           ),
           Text(
             "₹ " + price.toString(),
-            style: TextStyle(color: Colors.green, fontSize: 10),
+            style: TextStyle(color: Colors.green, fontSize: 12),
           )
         ],
       ),
@@ -72,8 +74,10 @@ class _ProdListState extends State<ProdList> {
 
   @override
   Widget build(BuildContext context) {
+    //print(widget.tag);
     return Container(
-      height: MediaQuery.of(context).size.height / 3,
+      //color: Colors.red,
+      height: MediaQuery.of(context).size.height / 4,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
@@ -82,7 +86,7 @@ class _ProdListState extends State<ProdList> {
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("products")
-                      .where('product_vendor', isEqualTo: widget.tag)
+                      .where('vendor_id', isEqualTo: widget.tag)
                       .snapshots(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -97,11 +101,12 @@ class _ProdListState extends State<ProdList> {
                         ],
                       );
                     } else {
-                      print("--------------------------------");
-                      print(snapshot.data.docs.length);
+                      // print("--------------------------------");
+                      // print(snapshot.data.docs.length);
 
                       return Container(
-                        height: MediaQuery.of(context).size.height / 2,
+                        //color: Colors.yellow,
+                        height: MediaQuery.of(context).size.height / 4,
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
@@ -113,7 +118,7 @@ class _ProdListState extends State<ProdList> {
                             print(snapshot.data.docs.length);
                             DocumentSnapshot prod = snapshot.data.docs[index];
 
-                            print(prod["product_name"]);
+                            //print(prod["product_name"]);
 
                             //return Container();
 

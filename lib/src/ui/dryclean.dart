@@ -67,28 +67,35 @@ class _DryCleanState extends State<DryClean> {
             ),
             Container(
               child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-    .collection("provider").where("provider_type",isEqualTo: "drycleaner")                      .snapshots(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        // physics: NeverScrollablePhysics(),
-                        itemCount: snapshot.data.docs.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot hotel = snapshot.data.docs[index];
-                          return drycleantile(hotel["drycleaner_name"], hotel["drycleaner_img_url"],
-                              hotel["drycleaner_time"], hotel.id, "location");
-                        },
-                      );
-                    }
-                  }),
+                stream: FirebaseFirestore.instance
+                    .collection("provider")
+                    .where("provider_type", isEqualTo: "drycleaner")
+                    .snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      // physics: NeverScrollablePhysics(),
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot hotel = snapshot.data.docs[index];
+                        return drycleantile(
+                            hotel["drycleaner_name"],
+                            hotel["drycleaner_img_url"],
+                            hotel["drycleaner_time"],
+                            hotel.id,
+                            "location");
+                      },
+                    );
+                  }
+                },
+              ),
             ),
 
             //Fifthlist(),
@@ -102,41 +109,49 @@ class _DryCleanState extends State<DryClean> {
       String name, String img, String time, String id, String loc) {
     print(loc);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DryCleanDet(
-                        title: name,
-                        img: img,
-                        time: time,
-                        id: id,
-                        loc: loc,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => DryCleanDet(
+                title: name,
+                img: img,
+                time: time,
+                id: id,
+                loc: loc,
+              ),
+            ),
+          );
         },
         child: Card(
           elevation: 3.0,
           child: Container(
-            height: MediaQuery.of(context).size.height / 5,
+            height: MediaQuery.of(context).size.height / 6,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fitWidth, image: NetworkImage(img)))),
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: NetworkImage(img),
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(name.toUpperCase(),
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        name.toUpperCase(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       SizedBox(
                         height: 2,
                       ),

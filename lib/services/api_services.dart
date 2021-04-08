@@ -2,7 +2,6 @@ import 'package:Service/src/Models/places_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-
 class ApiService {
   final key = 'AIzaSyBmu6oFhanMeN62Is3Q_-GdX8uBHDx4qLU';
 
@@ -10,8 +9,8 @@ class ApiService {
     var url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=geocode&key=$key';
     var response = await http.get(url);
-print(response.statusCode);
-print(response.body);
+    print(response.statusCode);
+    print(response.body);
 
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['predictions'] as List;
@@ -23,13 +22,15 @@ print(response.body);
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$key';
     var response = await http.get(url);
     var json = convert.jsonDecode(response.body);
-    var jsonResult = json['result'] as Map<String,dynamic>;
+    var jsonResult = json['result'] as Map<String, dynamic>;
     print(jsonResult);
     return Place.fromJson(jsonResult);
   }
 
-  Future<List<Place>> getPlaces(double lat, double lng,String placeType) async {
-    var url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?location=$lat,$lng&type=$placeType&rankby=distance&key=$key';
+  Future<List<Place>> getPlaces(
+      double lat, double lng, String placeType) async {
+    var url =
+        'https://maps.googleapis.com/maps/api/place/textsearch/json?location=$lat,$lng&type=$placeType&rankby=distance&key=$key';
     var response = await http.get(url);
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'] as List;

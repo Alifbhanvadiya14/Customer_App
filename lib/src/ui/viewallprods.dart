@@ -84,7 +84,7 @@ class _AllProdState extends State<AllProd> {
                 child: StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("products")
-                        .where('product_vendor', isEqualTo: widget.id)
+                        .where('vendor_id', isEqualTo: widget.id)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
@@ -104,6 +104,7 @@ class _AllProdState extends State<AllProd> {
                         print(snapshot.data.docs.length);
 
                         return Container(
+                          //color: Colors.red,
                           // height: MediaQuery.of(context).size.height / 2,
                           child: ListView.builder(
                             shrinkWrap: true,
@@ -117,9 +118,6 @@ class _AllProdState extends State<AllProd> {
                               DocumentSnapshot prod = snapshot.data.docs[index];
 
                               print(prod["product_name"]);
-
-                              //return Container();
-
                               return buildItem(
                                   context,
                                   prod["product_name"],
@@ -142,75 +140,85 @@ class _AllProdState extends State<AllProd> {
   buildItem(BuildContext context, String title, int price, String img, int cp,
       int weight) {
     return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+      child: Card(
+        elevation: 3,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ProdDet(
-                            title: title,
-                            url: img,
-                            quan: weight.toString(),
-                            cp: cp,
-                            sp: price,
-                            tag: widget.id,
-                          )));
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width / 3,
-              height: MediaQuery.of(context).size.height / 3,
-              child: Image.network(
-                img,
-                height: MediaQuery.of(context).size.height / 4,
-                width: MediaQuery.of(context).size.width / 4,
-              ),
-            ),
-          ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 100, left: 20),
-                child: Text(
-                  title,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    builder: (context) => ProdDet(
+                      title: title,
+                      url: img,
+                      quan: weight.toString(),
+                      cp: cp,
+                      sp: price,
+                      tag: widget.id,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                //color: Colors.yellow,
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.height / 6,
+                child: Image.network(
+                  img,
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: MediaQuery.of(context).size.width / 4,
                 ),
               ),
-              Row(
-                children: [
-                  cp == price
-                      ? Text(
-                          "₹ " + cp.toString(),
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green),
-                        )
-                      : Row(
-                          children: [
-                            Text(
-                              "₹ " + cp.toString() + " ",
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 15,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.lineThrough),
-                            ),
-                            Text(
-                              "₹ " + price.toString(),
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green),
-                            )
-                          ],
-                        ),
-                ],
-              ),
-            ],
-          ),
-        ]));
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 20),
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  children: [
+                    cp == price
+                        ? Text(
+                            "₹ " + cp.toString(),
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),
+                          )
+                        : Row(
+                            children: [
+                              Text(
+                                "₹ " + cp.toString() + " ",
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 15,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.lineThrough),
+                              ),
+                              Text(
+                                "₹ " + price.toString(),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green),
+                              )
+                            ],
+                          ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

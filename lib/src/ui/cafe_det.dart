@@ -143,7 +143,7 @@ class _CafeDetState extends State<CafeDet> {
                       const SizedBox(height: 30.0),
                       SizedBox(
                         width: double.infinity,
-                        child: RaisedButton(
+                        child: MaterialButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           color: Colors.purple,
@@ -157,13 +157,22 @@ class _CafeDetState extends State<CafeDet> {
                             horizontal: 32.0,
                           ),
                           onPressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => BookCafe(
+                            //               id: widget.id,
+                            //               name: widget.name,
+                            //             )));
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BookCafe(
-                                          id: widget.id,
-                                          name: widget.name,
-                                        )));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ViewTables(
+                                  id: widget.id,
+                                  name: widget.name,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -282,6 +291,150 @@ class _CafeDetState extends State<CafeDet> {
             ]),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ViewTables extends StatelessWidget {
+  final String id, name;
+
+  const ViewTables({Key key, this.id, this.name}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        title: Text("View Tables"),
+        elevation: 0.2,
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("provider")
+            .doc(id)
+            .collection("tables")
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data.docs.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 6, right: 8),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, top: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Image.network(
+                              snapshot.data.docs[index].data()["table_img_url"],
+                            ),
+                          ),
+                          SizedBox(width: 14),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  snapshot.data.docs[index]
+                                      .data()["table_name"],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: Row(
+                                    children: [
+                                      Text("₹ "),
+                                      Text(
+                                        '${snapshot.data.docs[index].data()["table_max_price"].toString()} ',
+                                        style: TextStyle(
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            color: Colors.red[900],
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(" "),
+                                      snapshot.data.docs[index]
+                                                  .data()["table_max_price"] >
+                                              snapshot.data.docs[index]
+                                                  .data()["table_offer_price"]
+                                          ? Text(
+                                              '${snapshot.data.docs[index].data()["table_offer_price"].toString()} ',
+                                              style: TextStyle(
+                                                  color: Colors.red[900],
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600),
+                                            )
+                                          : Text(""),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    "Seating Capacity : ${snapshot.data.docs[index].data()["seating_capacity"].toString()}",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    MaterialButton(
+                                      height: 30,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 0.0,
+                                      color: Theme.of(context).primaryColor,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => BookCafe(
+                                              id: id,
+                                              name: name,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Book Table",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }

@@ -17,7 +17,7 @@ class _FourthlistState extends State<Fourthlist> {
   }
 
   addDealItem() {
-    deal = List<deals>();
+    deal = [];
     deal.add(deals("assets/hotel.png", 'Hotel Rooms', 'Upto 50% off'));
     deal.add(deals("assets/grocery.png", 'Groceries', 'Upto 70% Off'));
     deal.add(
@@ -55,7 +55,7 @@ class _FourthlistState extends State<Fourthlist> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.height / 1.6,
+      height: size.height / 1.7,
       child: Stack(
         children: <Widget>[
           Container(

@@ -62,8 +62,10 @@ class _CafeState extends State<Cafe> {
               ),
             ),
             StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection("cafes").snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection("provider")
+                    .where("provider_type", isEqualTo: "cafe")
+                    .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (!snapshot.hasData) {
@@ -91,11 +93,11 @@ class _CafeState extends State<Cafe> {
                         return cafetile(
                             cafe["cafe_img_url"],
                             cafe["cafe_name"],
-                            cafe["cafe_cost"],
-                            cafe["cafe_time"],
-                            cafe["cafe_loc"],
+                            cafe["cafe_starting_cost"].toString(),
+                            cafe["cafe_timing"],
+                            cafe["cafe_location"],
                             cafe.id,
-                            cafe["cafe_ppl"],
+                            cafe["cafe_ppl"].toString(),
                             cafe["cafe_about"],
                             cafe["cafe_menu_url"]);
                       },
@@ -115,19 +117,21 @@ class _CafeState extends State<Cafe> {
       child: GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CafeDet(
-                        image: img,
-                        name: name,
-                        loc: loc,
-                        price: price,
-                        time: time,
-                        abt: abt,
-                        menu: menuurl,
-                        ppl: ppl,
-                        id: id,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => CafeDet(
+                image: img,
+                name: name,
+                loc: loc,
+                price: price,
+                time: time,
+                abt: abt,
+                menu: menuurl,
+                ppl: ppl,
+                id: id,
+              ),
+            ),
+          );
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.0),

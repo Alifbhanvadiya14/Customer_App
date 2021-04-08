@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'orderconfirmscreen.dart';
+
 class BookDryClean extends StatefulWidget {
   final String shopid;
   final String serviceid;
@@ -30,25 +32,19 @@ class _BookDryCleanState extends State<BookDryClean> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   DateTime _selectedDate;
 
-   String name,email,phone,userId;
+  String name, email, phone, userId;
 
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-        phone  = prefs.getString("phone");
-
-
-      });
-
-}
-
+      phone = prefs.getString("phone");
+    });
+  }
 
   double totalcost = 0.0;
   String type = "x";
@@ -90,7 +86,7 @@ getPreFab() async{
       "name": "Bakhera",
       "description": "Payment for the drycleaning",
       'order_id': 'order_EMBFqjDHEEn80l',
-       'timeout': 60, 
+      'timeout': 60,
       "prefill": {"contact": "2323232323", "email": "shdjsdh@gmail.com"},
       "external": {
         "wallets": ["paytm"]
@@ -118,27 +114,33 @@ getPreFab() async{
   }
 
   void success() {
-
-     var rand = Random();
+    var rand = Random();
     int id = rand.nextInt(100000);
     FirebaseFirestore.instance.collection('order-booking').add({
       "type": "drycleaning",
       "booking_id": id,
-      "user_phone": phone,
-"timeStamp": DateTime.now(),
+      "user_phone": int.parse(phone),
+      "timeStamp": DateTime.now(),
       "user_id": userId,
       "user_name": username.text,
       "dryclean_shop_id": widget.shopid,
       "service_id": widget.serviceid,
       "total_cost": totalcost,
-      "no_of_clothes": adults.text,
+      "no_of_clothes": int.parse(adults.text),
       "dryclean_shop_name": widget.shopname,
       "service_name": widget.servicename,
 
       "service_date": _textEditingController.text,
       //"total_amount": price,
-    }).then((value) =>
-        {Navigator.pop(context), showInSnackBar("Booking confirmed")});
+    }).then((value) => {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => OrderConfirm(
+                        orderId: id,
+                        msg: "Your Service is Booked",
+                      )))
+        });
   }
 
   void err(PaymentFailureResponse response) {
@@ -206,7 +208,6 @@ getPreFab() async{
                 if (_textEditingController.text != "" &&
                     adults.text != "" &&
                     username.text != "") {
-                
                   double costonecloth = widget.cost / int.parse(widget.clothes);
                   totalcost = int.parse(adults.text) * costonecloth;
                   print("here");
@@ -230,7 +231,7 @@ getPreFab() async{
                                 height: 5,
                               ),
                               Text(
-                                "For " + adults.text + " clothes",
+                                "For " + adults.text.toString() + " clothes",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text(
@@ -245,7 +246,6 @@ getPreFab() async{
                                   onPressed: () {
                                     // openCheckout();
                                     success();
-
                                   })
                             ],
                           ),

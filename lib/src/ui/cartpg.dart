@@ -9,29 +9,19 @@ class CartPg extends StatefulWidget {
 }
 
 class _CartPgState extends State<CartPg> {
+  String name, email, phone, userId;
 
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-   String name,email,phone,userId;
-
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
-
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
-
-        phone  = prefs.getString("phone");
-
-
-      });
-
-}
-
-
+      phone = prefs.getString("phone");
+    });
+  }
 
   int totalprice = 0;
   int totalitem = 0;
@@ -218,7 +208,7 @@ getPreFab() async{
                         height: 4,
                       ),
                       Text(
-                      "Price: "+  "₹ " + price.toString(),
+                        "Price: " + "₹ " + price.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.green),
                       ),
@@ -226,101 +216,100 @@ getPreFab() async{
                         height: 2,
                       ),
                       Text(
-                          "Size: "+    amt,
+                        "Size: " + amt,
                       ),
                       SizedBox(
                         height: 6,
                       ),
-                    
                     ],
                   ),
                 ),
               ),
-                Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              totalprice += price;
-                            });
-                            FirebaseFirestore.instance
-                                .collection("cart")
-                                .doc(id)
-                                .update({"prod_quan": ++quan});
-                            print(totalprice);
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: Text(
-                                "+",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        totalprice += price;
+                      });
+                      FirebaseFirestore.instance
+                          .collection("cart")
+                          .doc(id)
+                          .update({"prod_quan": ++quan});
+                      print(totalprice);
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          "+",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
-                          width: 10,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    quan.toString(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: () {
+                      if (quan != 1) {
+                        setState(() {
+                          totalprice -= price;
+                        });
+
+                        FirebaseFirestore.instance
+                            .collection("cart")
+                            .doc(id)
+                            .update({"prod_quan": --quan});
+
+                        ///
+                      } else {
+                        setState(() {
+                          totalprice -= price;
+                          totalitem--;
+                        });
+                        FirebaseFirestore.instance
+                            .collection("cart")
+                            .doc(id)
+                            .delete();
+                      }
+
+                      // quan--;
+
+                      print(totalprice);
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          "-",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
-                        Text(
-                          quan.toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(width: 10),
-                        GestureDetector(
-                          onTap: () {
-                            if (quan != 1) {
-                              setState(() {
-                                totalprice -= price;
-                              });
-
-                              FirebaseFirestore.instance
-                                  .collection("cart")
-                                  .doc(id)
-                                  .update({"prod_quan": --quan});
-
-                              ///
-                            } else {
-                              setState(() {
-                                totalprice -= price;
-                                totalitem--;
-                              });
-                              FirebaseFirestore.instance
-                                  .collection("cart")
-                                  .doc(id)
-                                  .delete();
-                            }
-
-                            // quan--;
-
-                            print(totalprice);
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: Text(
-                                "-",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

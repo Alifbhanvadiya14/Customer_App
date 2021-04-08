@@ -66,10 +66,9 @@ class _HotelListState extends State<HotelList> {
               height: 5,
             ),
             StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance
-              .collection("provider").where("provider_type",isEqualTo: "hotel") 
-                    
+                stream: FirebaseFirestore.instance
+                    .collection("provider")
+                    .where("provider_type", isEqualTo: "hotel")
                     .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -127,17 +126,19 @@ class _HotelListState extends State<HotelList> {
       child: GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HotelDet(
-                        name: name,
-                        price: price,
-                        img: img,
-                        rate: rate,
-                        loc: loc,
-                        hotelid: id,
-                        abt: abt,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => HotelDet(
+                name: name,
+                price: price,
+                img: img,
+                rate: rate,
+                loc: loc,
+                hotelid: id,
+                abt: abt,
+              ),
+            ),
+          );
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
@@ -152,8 +153,11 @@ class _HotelListState extends State<HotelList> {
                     height: 150,
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fitWidth, image: NetworkImage(img))),
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(img),
+                      ),
+                    ),
                   ),
                 ),
               ),

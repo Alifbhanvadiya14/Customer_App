@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'orderconfirmscreen.dart';
+
 class DeliveryConfirm extends StatefulWidget {
   final String vendortag;
   final int amt;
@@ -23,62 +25,57 @@ class _DeliveryConfirmState extends State<DeliveryConfirm> {
   TextEditingController _mobileNumberController = TextEditingController();
   TextEditingController _pincodeNumberController = TextEditingController();
 
-   String name,email,phone,userId;
+  String name, email, phone, userId;
 
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-        phone  = prefs.getString("phone");
+      phone = prefs.getString("phone");
+    });
+    fetchAddress();
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    getPreFab();
+  }
 
-      });
-      fetchAddress();
+  void saveAddress() {
+    FirebaseFirestore.instance.collection("Users").doc(userId).update({
+      "add1": _add1Controller.text,
+      "add2": _add2Controller.text,
+      "landmark": _landmarkController.text,
+      "city": _cityController.text,
+      "pincode": _pincodeNumberController.text,
+    }).then((value) => {print("Address updated")});
+  }
 
-}
-
-@override
-void initState() { 
-  super.initState();
-  getPreFab();
-
-}
-
-void saveAddress(){
-  FirebaseFirestore.instance.collection("Users").doc(userId).update({
-    "add1": _add1Controller.text,
-    "add2": _add2Controller.text,
-    "landmark": _landmarkController.text,
-    "city": _cityController.text,
-    "pincode": _pincodeNumberController.text,
-  
-  }).then((value) => {
-    print("Address updated")
-  });
-}
-
-
-fetchAddress(){
-  FirebaseFirestore.instance.collection("Users").doc(userId).get().then((value) => {
-    if(value.exists){
-print("fetch"),
-setState((){
-        _add1Controller.text = value["add1"];
-      _add2Controller.text = value["add2"];
-      _landmarkController.text = value["landmark"];
-      _pincodeNumberController.text = value["pincode"];
-      _cityController.text = value["city"];
-       _mobileNumberController.text = value["phone"];
-})
-    }
-  });
-}
+  fetchAddress() {
+    FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userId)
+        .get()
+        .then((value) => {
+              if (value.exists)
+                {
+                  print("fetch"),
+                  setState(() {
+                    _add1Controller.text = value["add1"];
+                    _add2Controller.text = value["add2"];
+                    _landmarkController.text = value["landmark"];
+                    _pincodeNumberController.text = value["pincode"];
+                    _cityController.text = value["city"];
+                    _mobileNumberController.text = value["phone"];
+                  })
+                }
+            });
+  }
 
   void placeorder() {
     var rand = Random();
@@ -97,8 +94,8 @@ setState((){
       "vendor": widget.vendortag,
       "user_id": userId,
       "timeStamp": DateTime.now(),
-      "order_amount": widget.amt.toString(), 
-"order_items": widget.items.toString()
+      "order_amount": widget.amt,
+      "order_items": widget.items
     }).then((value) => {print("added")});
 
     FirebaseFirestore.instance
@@ -124,8 +121,14 @@ setState((){
                       .doc(value.docs[i].id)
                       .delete()
                 }
-            });
-    showInSnackBar("Order Succesful");
+            })
+        .then((value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => OrderConfirm(
+                      orderId: id,
+                      msg: "Your Products are Ordered",
+                    ))));
   }
 
   void showInSnackBar(String value) {
@@ -220,7 +223,7 @@ setState((){
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                  child: RaisedButton(
+                  child: MaterialButton(
                     onPressed: () {
                       saveAddress();
                       placeorder();

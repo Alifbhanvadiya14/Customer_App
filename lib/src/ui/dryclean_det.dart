@@ -78,19 +78,23 @@ class _DryCleanDetState extends State<DryCleanDet> {
               child: Card(
                 elevation: 3.0,
                 child: Container(
-                  height: MediaQuery.of(context).size.height / 3,
+                  //color: Colors.red,
+                  height: MediaQuery.of(context).size.height / 4,
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                              width: 150,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: NetworkImage(widget.img)))),
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.fitWidth,
+                                image: NetworkImage(widget.img),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -117,9 +121,11 @@ class _DryCleanDetState extends State<DryCleanDet> {
                       RaisedButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MyCustomForm()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyCustomForm(),
+                            ),
+                          );
                         },
                         color: Colors.green,
                         textColor: Colors.white,
@@ -156,8 +162,8 @@ class _DryCleanDetState extends State<DryCleanDet> {
             ),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
-                  .collection("provider")
-                  // .where("provider_type",isEqualTo: "drycleaner")  
+                    .collection("provider")
+                    // .where("provider_type",isEqualTo: "drycleaner")
                     .doc(widget.id)
                     .collection("services")
                     .snapshots(),
@@ -231,8 +237,11 @@ Widget drycleanservice(
                 height: 150,
                 width: MediaQuery.of(context).size.width * 0.70,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fitWidth, image: NetworkImage(img))),
+                  image: DecorationImage(
+                    fit: BoxFit.fitWidth,
+                    image: NetworkImage(img),
+                  ),
+                ),
               ),
             ),
           ),

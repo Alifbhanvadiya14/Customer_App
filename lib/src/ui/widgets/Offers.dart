@@ -41,8 +41,9 @@ class _ThirdlistState extends State<Thirdlist> {
               }
             },
             child: Container(
+              //color: Colors.red,
               width: MediaQuery.of(context).size.width / 4,
-              height: MediaQuery.of(context).size.height / 4,
+              height: MediaQuery.of(context).size.height / 7,
               child: Image.asset(
                 name[index],
                 height: MediaQuery.of(context).size.height / 5,
@@ -52,7 +53,7 @@ class _ThirdlistState extends State<Thirdlist> {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 10),
+            style: TextStyle(fontSize: 12),
           )
         ],
       ),
@@ -62,7 +63,8 @@ class _ThirdlistState extends State<Thirdlist> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 3.5,
+      //color: Colors.red,
+      height: MediaQuery.of(context).size.height / 5,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [

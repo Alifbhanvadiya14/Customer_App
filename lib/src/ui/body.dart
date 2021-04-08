@@ -17,25 +17,25 @@ class _BodyState extends State<Body> {
     return SafeArea(
       child: ListView(
         children: <Widget>[
-          Consumer<LocationProvider>(
-      builder: (context,model,child){
-      if(model.selectedLocationStatic.name ==null){
-        return Center(child: CircularProgressIndicator());
-      }else{
-      return Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width *0.7,
-            child: Text(model.selectedLocationStatic.name,
-              style: TextStyle(fontSize: 12),),
-          ),
-            Text("Current Address",
-            style: TextStyle(fontSize: 12),),
-        ],
-      );
-      }
-      },
-    ),
+          //       Consumer<LocationProvider>(
+          //   builder: (context,model,child){
+          //   if(model.selectedLocationStatic.name ==null){
+          //     return Center(child: CircularProgressIndicator());
+          //   }else{
+          //   return Column(
+          //     children: [
+          //       Container(
+          //         width: MediaQuery.of(context).size.width *0.7,
+          //         child: Text(model.selectedLocationStatic.name,
+          //           style: TextStyle(fontSize: 12),),
+          //       ),
+          //         Text("Current Address",
+          //         style: TextStyle(fontSize: 12),),
+          //     ],
+          //   );
+          //   }
+          //   },
+          // ),
           Container(
             height: MediaQuery.of(context).size.height / 11,
             color: Color(0xff2874F0),

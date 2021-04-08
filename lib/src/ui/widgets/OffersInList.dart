@@ -18,6 +18,7 @@ class _SecondlistState extends State<Secondlist> {
   final List<Widget> imageSliders = imgList
       .map((item) => Container(
             child: Container(
+              //color: Colors.red,
               margin: EdgeInsets.all(5.0),
               child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -26,8 +27,8 @@ class _SecondlistState extends State<Secondlist> {
                       Image.network(
                         item,
                         fit: BoxFit.fill,
-                        width: 1000.0,
-                        height: 500,
+                        width: 900.0,
+                        height: 450,
                       ),
                       Positioned(
                         bottom: 0.0,
@@ -57,6 +58,7 @@ class _SecondlistState extends State<Secondlist> {
     return Padding(
       padding: const EdgeInsets.all(3),
       child: Container(
+          //color: Colors.red,
           child: CarouselSlider(
         options: CarouselOptions(
           autoPlay: true,

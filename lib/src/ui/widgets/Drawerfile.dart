@@ -12,26 +12,19 @@ class Drawerfile extends StatefulWidget {
 class _DrawerfileState extends State<Drawerfile> {
   List<DrawerItemModel> drawerItemModel;
 
-   String name,email,phone,userId;
+  String name, email, phone, userId;
 
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-        phone  = prefs.getString("phone");
-
-
-      });
-
-}
-
-
+      phone = prefs.getString("phone");
+    });
+  }
 
   @override
   void initState() {
@@ -96,8 +89,9 @@ getPreFab() async{
     return ListView(
       children: <Widget>[
         UserAccountsDrawerHeader(
-         currentAccountPicture: CircleAvatar(child: Text(name)), 
-          accountName: Text(name), accountEmail: Text(phone)),
+            currentAccountPicture: CircleAvatar(child: Text(name)),
+            accountName: Text(name),
+            accountEmail: Text(phone)),
         Container(
           height: size.height / 10,
           color: Color(0xff2874F0),
@@ -122,16 +116,14 @@ getPreFab() async{
         //     return buildItem(context, index);
         //   },
         // )
-        ListTile(title: Text("Past Order",
-         style:TextStyle(fontSize: 18)
-        ),
-        onTap: (){
-             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PastOrders()));
-        },
-        leading: Icon(Icons.add_a_photo),)
+        ListTile(
+          title: Text("Past Order", style: TextStyle(fontSize: 18)),
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => PastOrders()));
+          },
+          leading: Icon(Icons.add_a_photo),
+        )
       ],
     );
   }

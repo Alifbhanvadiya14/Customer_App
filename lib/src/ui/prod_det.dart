@@ -9,42 +9,34 @@ class ProdDet extends StatefulWidget {
   final String url;
   final int sp;
   final int cp;
-  final String tag;
+  final String tag, name;
   final String quan;
-  ProdDet({this.title, this.url, this.quan, this.cp, this.sp, this.tag});
+  ProdDet(
+      {this.title, this.url, this.quan, this.cp, this.sp, this.tag, this.name});
   @override
   _ProdDetState createState() => _ProdDetState();
 }
 
 class _ProdDetState extends State<ProdDet> {
+  String name, email, phone, userId;
 
+  getPreFab() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString("userId");
 
-   String name,email,phone,userId;
+      name = prefs.getString("username");
+      email = prefs.getString("email");
 
-getPreFab() async{
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        
-        userId  = prefs.getString("userId");
+      phone = prefs.getString("phone");
+    });
+  }
 
-        name  = prefs.getString("username");
-                email  = prefs.getString("email");
-
-        phone  = prefs.getString("phone");
-
-
-      });
-
-}
-
-@override
-void initState() { 
-  super.initState();
-  getPreFab();
-}
-
-
+  @override
+  void initState() {
+    super.initState();
+    getPreFab();
+  }
 
   int orderitemquan = 1;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -94,8 +86,9 @@ void initState() {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Row(children: [
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: Row(
+              children: [
                 widget.cp == widget.sp
                     ? Text(
                         "₹ " + widget.cp.toString(),
@@ -124,7 +117,9 @@ void initState() {
                           )
                         ],
                       ),
-              ])),
+              ],
+            ),
+          ),
           Padding(
               padding: const EdgeInsets.only(top: 10, left: 20),
               child: Row(
@@ -191,20 +186,19 @@ void initState() {
               )),
           Padding(
             padding: const EdgeInsets.only(top: 5, left: 20, right: 40),
-            child: RaisedButton(
+            child: MaterialButton(
               onPressed: () {
                 print("ss");
-            FirebaseFirestore.instance.collection('cart').add({
+                FirebaseFirestore.instance.collection('cart').add({
                   "prod_name": widget.title,
                   "prod_max_price": widget.cp,
                   "prod_price": widget.sp,
                   "prod_quan": orderitemquan,
                   "prod_img": widget.url,
-                  "user_id": userId
-                ,
+                  "user_id": userId,
                   "username": name,
-
                   "vendor_tag": widget.tag,
+                  "vendor_name": widget.name,
                   "timestamp": DateTime.now(),
                   "prod_size": widget.quan
                 }).then((value) => showInSnackBar("Item Added"));
@@ -225,7 +219,7 @@ void initState() {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 5, left: 20),
+            padding: const EdgeInsets.only(top: 5, left: 20, right: 16),
             child: Text(
               "To take your coffee experiences to the next level, NESCAFÉ, the world’s favourite instant coffee brand, brings forth a rich and aromatic coffee in the form of NESCAFÉ Classic. ",
             ),
