@@ -1,5 +1,4 @@
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-
 import 'package:flutter_otp/flutter_otp.dart';
 import '../phoneauth/otp_screen.dart';
 import 'package:flutter/material.dart';
